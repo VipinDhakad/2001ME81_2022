@@ -3,17 +3,17 @@ import csv
 import pandas as pd
 with open('octant_input.csv','r') as input_file:
     reader=csv.reader(input_file)
-    with open('output.csv','w',newline='') as output_file:
+    with open('octant_output.csv','w',newline='') as output_file:
         writer=csv.writer(output_file)
         for row in reader:
             writer.writerow(row)
-data=pd.read_csv('output.csv')
+data=pd.read_csv('octant_output.csv')
 u_avg=data['U'].mean()
 v_avg=data['V'].mean()
 w_avg=data['W'].mean()
-print(u_avg)
-print(v_avg)
-print(w_avg)
+# print(u_avg)
+# print(v_avg)
+# print(w_avg)
 # data['U_avg']=""
 # data['V_avg']=""
 # data['W_avg']=""
@@ -88,7 +88,9 @@ cnt_n3=0
 cnt_p4=0
 cnt_n4=0
 data.at[1,'Octant ID']=mod
+# print(len(data))
 while i<len(data):
+    flag=False
     for j in range(prev+1,mod*iter+1):
         if i<len(data):
             if data.at[i,'Octant']==1:
@@ -107,26 +109,30 @@ while i<len(data):
                 cnt_p4=cnt_p4+1
             if data.at[i,'Octant']==-4:
                 cnt_n4=cnt_n4+1
-        
-        data.at[iter+1,'1']=cnt_p1
-        data.at[iter+1,'-1']=cnt_n1
-        data.at[iter+1,'2']=cnt_p2
-        data.at[iter+1,'-2']=cnt_n2
-        data.at[iter+1,'3']=cnt_p3
-        data.at[iter+1,'-3']=cnt_n3
-        data.at[iter+1,'4']=cnt_p4
-        data.at[iter+1,'-4']=cnt_n4
-        cnt_p1=0
-        cnt_n1=0
-        cnt_p2=0
-        cnt_n2=0
-        cnt_p3=0
-        cnt_n3=0
-        cnt_p4=0
-        cnt_n4=0
-        i=i+1
+            i=i+1
+        else:
+            flag=True
+    data.at[iter+1,'Octant ID']=str(prev+1)+"-"+str(mod*iter)
+    if flag:
+        data.at[iter+1,'Octant ID']=str(prev+1)+"-"+str(len(data))
+    data.at[iter+1,'1']=cnt_p1
+    data.at[iter+1,'-1']=cnt_n1
+    data.at[iter+1,'2']=cnt_p2
+    data.at[iter+1,'-2']=cnt_n2
+    data.at[iter+1,'3']=cnt_p3
+    data.at[iter+1,'-3']=cnt_n3
+    data.at[iter+1,'4']=cnt_p4
+    data.at[iter+1,'-4']=cnt_n4
+    cnt_p1=0
+    cnt_n1=0
+    cnt_p2=0
+    cnt_n2=0
+    cnt_p3=0
+    cnt_n3=0
+    cnt_p4=0
+    cnt_n4=0
     prev=mod*iter
     iter=iter+1
 
-data.to_csv('output.csv',index=False)
+data.to_csv('octant_output.csv',index=False)
 
