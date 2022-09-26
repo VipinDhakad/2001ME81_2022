@@ -77,7 +77,7 @@ data.at[0,'-4']=cnt_n4
 
 mod=5000
 i=0
-prev=-1
+prev=0
 iter=1
 cnt_p1=0
 cnt_n1=0
@@ -91,7 +91,7 @@ data.at[1,'Octant ID']=mod
 # print(len(data))
 while i<len(data):
     flag=False
-    for j in range(prev+1,mod*iter+1):
+    for j in range(prev,mod*iter):
         if i<len(data):
             if data.at[i,'Octant']==1:
                 cnt_p1=cnt_p1+1
@@ -112,9 +112,9 @@ while i<len(data):
             i=i+1
         else:
             flag=True
-    data.at[iter+1,'Octant ID']=str(prev+1)+"-"+str(mod*iter)
+    data.at[iter+1,'Octant ID']=str(prev)+"-"+str(mod*iter-1)
     if flag:
-        data.at[iter+1,'Octant ID']=str(prev+1)+"-"+str(len(data))
+        data.at[iter+1,'Octant ID']=str(prev)+"-"+str(len(data))
     data.at[iter+1,'1']=cnt_p1
     data.at[iter+1,'-1']=cnt_n1
     data.at[iter+1,'2']=cnt_p2
