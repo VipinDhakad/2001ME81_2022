@@ -81,7 +81,7 @@ def octant_transition_count(mod=5000):
     data.at[0,'4']=cnt_p4
     data.at[0,'-4']=cnt_n4
 
-    mod=5000
+    
     i=0
     prev=0
     iter=1
@@ -131,7 +131,7 @@ def octant_transition_count(mod=5000):
         data.at[15,f'{points[i-14]}']=points[i-14]
     for i in range(16,24):
         data.at[i,'Octant ID']=points[i-16]
-    print(data.iloc[0,1])
+    
     for i in range(16,24):
         for j in range(12,20):
             data.iloc[i,j]=0
@@ -170,9 +170,71 @@ def octant_transition_count(mod=5000):
             col_val=4
         elif data.iloc[i+1,10]==-4:
             col_val=-4
-        # if pd.isnull(data.at[row_val, data.iloc[i+1,10]]):
-        #     data.at[row_val, data.iloc[i+1,10]]=0
+        
         data.at[row_val,f'{col_val}']+=1
+    i=0
+    prev=0
+    k=0
+    iter=1
+
+    while i<len(data)-1:
+        flag=False
+        points=[1,-1,2,-2,3,-3,4,-4]
+        for a in range(0,8):
+            data.at[28+k,f'{points[a]}']=points[a]
+        for a in range(0,8):
+            data.at[a+29+k,'Octant ID']=points[a]
+        for a in range(0,8):
+            for b in range(12,20):
+                data.iloc[a+29+k,b]=0
+        for j in range(prev,mod*iter):
+            if i<len(data)-1:
+                row_val=0
+                col_val=0
+                if data.iloc[i,10]==1:
+                    row_val=29+k
+                elif data.iloc[i,10]==-1:
+                    row_val=30+k
+                elif data.iloc[i,10]==2:
+                    row_val=31+k
+                elif data.iloc[i,10]==-2:
+                    row_val=32+k
+                elif data.iloc[i,10]==3:
+                    row_val=33+k
+                elif data.iloc[i,10]==-3:
+                    row_val=34+k
+                elif data.iloc[i,10]==4:
+                    row_val=35+k
+                elif data.iloc[i,10]==-4:
+                    row_val=36+k
+                if data.iloc[i+1,10]==1:
+                    col_val=1
+                elif data.iloc[i+1,10]==-1:
+                    col_val=-1
+                elif data.iloc[i+1,10]==2:
+                    col_val=2
+                elif data.iloc[i+1,10]==-2:
+                    col_val=-2
+                elif data.iloc[i+1,10]==3:
+                    col_val=3
+                elif data.iloc[i+1,10]==-3:
+                    col_val=-3
+                elif data.iloc[i+1,10]==4:
+                    col_val=4
+                elif data.iloc[i+1,10]==-4:
+                    col_val=-4
+                i=i+1
+                data.at[row_val,f'{col_val}']+=1
+            else:
+                flag=True
+        data.at[26+k,'Octant ID']='Mod Transition Value'
+        data.at[27+k,'Octant ID']=str(prev)+"-"+str(mod*iter-1)
+        data.at[28+k,'Octant ID']='Count'
+        if flag:
+            data.at[27+k,'Octant ID']=str(prev)+"-"+str(len(data))
+        prev=mod*iter
+        iter=iter+1
+        k+=15
 
     data.to_excel('output_octant_transition_identify.xlsx',index=False)
 from platform import python_version
