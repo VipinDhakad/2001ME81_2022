@@ -63,7 +63,9 @@ def write_data():
                     data.at[i,'Octant']=-3
         i=i+1
     print("Data writing complete")
+    ##saving the output file generated
     data.to_excel('output.xlsx',index=False)
+    ##longest subsequence count function definition
 def octant_longest_subsequence_count():
     data=pd.read_excel('output.xlsx')
     octants=[1,-1,2,-2,3,-3,4,-4]
@@ -71,6 +73,7 @@ def octant_longest_subsequence_count():
     data.at[0,""]=None
     for i in range(0,8):
         data.at[i,'Count']=octants[i]
+    ##finding the size of longest subsequence and its frequency
     for octant in octants:
         freq=1
         for ele in data['Octant']:
@@ -86,6 +89,7 @@ def octant_longest_subsequence_count():
             row_val=2*octant-2
         else:
             row_val=-2*octant-1
+        ##updating the values accordingly to the excel sheet
         data.at[row_val,'Longest Subsquence Length']=overall_max
         data.at[row_val,'Frequency']=freq
         curr_max,overall_max=0,0
