@@ -2,7 +2,10 @@
 # tut3 solution
 import pandas as pd
 import openpyxl
-inp = openpyxl.load_workbook('input_octant_longest_subsequence.xlsx')
+try:
+    inp = openpyxl.load_workbook('input_octant_longest_subsequence.xlsx')
+except:
+    print("File not found!")
 sheet_input = inp.active
 ##opening a new workbook to save as a output
 output = openpyxl.Workbook()
@@ -23,7 +26,10 @@ for i in range (1, mr + 1):
 
 output.save("output.xlsx")
 def write_data():
-    data=pd.read_excel('output.xlsx')
+    try:
+        data=pd.read_excel('output.xlsx')
+    except:
+        print("File not found!")
     ##finding the mean of the column "U", "V", and "W" with the help of mean functions
     u_avg=data['U'].mean()
     v_avg=data['V'].mean()
@@ -107,5 +113,11 @@ else:
     print("Please install 3.8.10. Instruction are present in the GitHub Repo/Webmail. Url: https://pastebin.com/nvibxmjw")
 
 ##calling the function to get our work done
-write_data()
-octant_longest_subsequence_count()
+try:
+    write_data()
+except:
+    print("Error in copying data from input to newly generated output file")
+try:
+    octant_longest_subsequence_count()
+except:
+    print("Error in finding longest subsequence length")
