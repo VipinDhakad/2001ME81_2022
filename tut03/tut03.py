@@ -2,6 +2,8 @@
 # tut3 solution
 import pandas as pd
 import openpyxl
+from datetime import datetime
+start_time=datetime.now()
 try:
     inp = openpyxl.load_workbook('input_octant_longest_subsequence.xlsx')
 except:
@@ -81,12 +83,9 @@ def octant_longest_subsequence_count():
         data.at[i,'Count']=octants[i]
     ##finding the size of longest subsequence and its frequency
     for octant in octants:
-        freq=1
         for ele in data['Octant']:
             if ele==octant:
                 curr_max+=1
-                if curr_max==overall_max: freq+=1
-                else: freq=1
                 overall_max=max(overall_max,curr_max)
             else:
                 curr_max=0
@@ -97,10 +96,18 @@ def octant_longest_subsequence_count():
             row_val=-2*octant-1
         ##updating the values accordingly to the excel sheet
         data.at[row_val,'Longest Subsquence Length']=overall_max
+        freq=0
+        for ele in data['Octant']:
+            if ele==octant:
+                curr_max+=1
+                if curr_max==overall_max: freq+=1
+            else:
+                curr_max=0
         data.at[row_val,'Frequency']=freq
         curr_max,overall_max=0,0
     print("Longest Subsequence length finding complete")
     data.to_excel('output_octant_longest_subsequence.xlsx',index=False)
+    print("Task Accomplished!")
 
 
 
@@ -121,3 +128,6 @@ try:
     octant_longest_subsequence_count()
 except:
     print("Error in finding longest subsequence length")
+
+end_time=datetime.now()
+print(f"Duration of program execution: {end_time-start_time}")
