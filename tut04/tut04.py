@@ -27,10 +27,10 @@ for i in range (1, mr + 1):
 		# writing the read value to destination output file
 		out.cell(row = i, column = j).value = data.value
 
-output.save("output.xlsx")
+output.save("output_octant_longest_subsequence_with_range.xlsx")
 def write_data():
     try:
-        data=pd.read_excel('output.xlsx')
+        data=pd.read_excel('output_octant_longest_subsequence_with_range.xlsx')
     except:
         print("File not found!")
     ##finding the mean of the column "U", "V", and "W" with the help of mean functions
@@ -73,10 +73,10 @@ def write_data():
         i=i+1
     print("Data writing complete")
     ##saving the output file generated
-    data.to_excel('output.xlsx',index=False)
+    data.to_excel('output_octant_longest_subsequence_with_range.xlsx',index=False)
     ##longest subsequence count function definition
 def octant_longest_subsequence_count_with_range():
-    data=pd.read_excel('output.xlsx')
+    data=pd.read_excel('output_octant_longest_subsequence_with_range.xlsx')
     octants=[1,-1,2,-2,3,-3,4,-4]
     curr_max,overall_max=0,0
     data.at[0,""]=None
@@ -137,7 +137,7 @@ def octant_longest_subsequence_count_with_range():
 
 
 
-    data.to_excel('output.xlsx',index=False)
+    data.to_excel('output_octant_longest_subsequence_with_range.xlsx',index=False)
     print("Task Accomplished!")
 
 
