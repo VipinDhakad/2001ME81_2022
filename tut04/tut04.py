@@ -6,7 +6,7 @@ import openpyxl
 from datetime import datetime
 start_time=datetime.now()
 try:
-    inp = openpyxl.load_workbook('input_octant_longest_subsequence_with_range.xlsx')
+    inp = openpyxl.load_workbook('small_input.xlsx')
 except:
     print("File not found!")
 sheet_input = inp.active
