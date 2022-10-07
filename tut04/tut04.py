@@ -6,7 +6,7 @@ import openpyxl
 from datetime import datetime
 start_time=datetime.now()
 try:
-    inp = openpyxl.load_workbook('small_input.xlsx')
+    inp = openpyxl.load_workbook('input_octant_longest_subsequence_with_range.xlsx')
 except:
     print("File not found!")
 sheet_input = inp.active
@@ -99,45 +99,45 @@ def octant_longest_subsequence_count_with_range():
         ##updating the values accordingly to the excel sheet
         data.at[row_val,'Longest Subsquence Length']=overall_max
         freq=0
-        time_start,time_end=0,0
+        time_start,time_end=0,0 #variables for storing starting and ending times for longest subsequence
         i=0
-        flag=True
-        oneTimeFlag=True
+        flag=True  #flags for storing starting time only once
+        oneTimeFlag=True   #flag for writing octant value heading once
         data.at[9,'Count']='Octant Value'
-        data.at[9,'Longest Subsquence Length']='Start Time'
+        data.at[9,'Longest Subsquence Length']='Start Time'  #writing the headings
         data.at[9,'Frequency']='End Time'
         for ele in data['Octant']:
             if ele==octant:
                 if flag:
-                    time_start=i
+                    time_start=i     #storing the starting time
                     flag=False
                 curr_max+=1
                 if curr_max==overall_max:
                     freq+=1
-                    time_end=i
+                    time_end=i    #updating the end time
                     if oneTimeFlag:
                         data.at[10+j,'Count']=octant
                         oneTimeFlag=False
-                    data.at[10+j,'Longest Subsquence Length']=data.at[time_start,'Time']
-                    data.at[10+j,'Frequency']=data.at[time_end,'Time']
+                    data.at[10+j,'Longest Subsquence Length']=data.at[time_start,'Time']    #accessing the start time with index
+                    data.at[10+j,'Frequency']=data.at[time_end,'Time']                      #accessing the end time with index
                     j+=1
                     flag=True
             else:
                 curr_max=0
                 flag=True
             i+=1
-        flag=True
-        oneTimeFlag=True
-        time_start=0
-        time_end=0
+        flag=True           #resetting the flags to store new start time
+        oneTimeFlag=True    #resetting the flag for writing new heading
+        time_start=0        #resetting the start time for a newer longest subsequence
+        time_end=0          #resetting the end time for a newer longest subsequence
         j+=1
-        data.at[row_val,'Frequency']=freq
+        data.at[row_val,'Frequency']=freq    #updating the frequency for the octant
         curr_max,overall_max=0,0
     print("Longest Subsequence length finding complete")
 
 
 
-    data.to_excel('output_octant_longest_subsequence_with_range.xlsx',index=False)
+    data.to_excel('output_octant_longest_subsequence_with_range.xlsx',index=False)   #saving the output generated
     print("Task Accomplished!")
 
 
@@ -145,20 +145,20 @@ def octant_longest_subsequence_count_with_range():
 from platform import python_version
 ver = python_version()
 
-if ver == "3.8.10":
+if ver == "3.8.10":             #checking the version if correctly installed
     print("Correct Version Installed")
 else:
     print("Please install 3.8.10. Instruction are present in the GitHub Repo/Webmail. Url: https://pastebin.com/nvibxmjw")
 
 ##calling the function to get our work done
 try:
-    write_data()
+    write_data()             #copying the data from given input to newly generated output file
 except:
     print("Error in copying data from input to newly generated output file")
 try:
-    octant_longest_subsequence_count_with_range()
+    octant_longest_subsequence_count_with_range()        #generating the output file
 except:
     print("Error in finding longest subsequence length with time ranges")
 
-end_time=datetime.now()
+end_time=datetime.now()      #finding the execution time of the program
 print(f"Duration of program execution: {end_time-start_time}")
