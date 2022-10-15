@@ -27,11 +27,11 @@ for i in range (1, mr + 1):
 		# writing the read value to destination output file
 		out.cell(row = i, column = j).value = data.value
 
-output.save("output.xlsx")
+output.save("octant_output_ranking_excel.xlsx")
  
 def octant_range_names(mod=5000):
     try:
-        data=pd.read_excel('output.xlsx')
+        data=pd.read_excel('octant_output_ranking_excel.xlsx')
     except:
         print("File not found!")
     ##finding the mean of the column "U", "V", and "W" with the help of mean functions
@@ -137,9 +137,9 @@ def octant_range_names(mod=5000):
 
     print("Data writing complete")
     ##saving the output file generated
-    data.to_excel('output.xlsx',index=False)
+    data.to_excel('octant_output_ranking_excel.xlsx',index=False)
     print("Starting rank calculation")
-    data=pd.read_excel('output.xlsx')
+    data=pd.read_excel('octant_output_ranking_excel.xlsx')
     octants=[1,-1,2,-2,3,-3,4,-4]
     i=1
     list_of_octant_counts=[]
@@ -180,7 +180,7 @@ def octant_range_names(mod=5000):
         data.at[row,'-1']=octant_name_id_mapping[f"{octant}"]
         data.at[row,'2']=Rank1_mod_values_count.count(octant)
         row+=1
-    data.to_excel('output.xlsx',index=False)        #saving the output
+    data.to_excel('octant_output_ranking_excel.xlsx',index=False)        #saving the output
 
 
 from platform import python_version
