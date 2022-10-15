@@ -146,6 +146,7 @@ def octant_range_names(mod=5000):
     octants=[1,-1,2,-2,3,-3,4,-4]
     i=1
     list_of_octant_counts=[]
+    octant_name_id_mapping = {"1":"Internal outward interaction", "-1":"External outward interaction", "2":"External Ejection", "-2":"Internal Ejection", "3":"External inward interaction", "-3":"Internal inward interaction", "4":"Internal sweep", "-4":"External sweep"}
     for octant in octants:
         data.at[0,f'Rank of {octant}']=f'Rank {i}'
         i+=1
@@ -156,7 +157,9 @@ def octant_range_names(mod=5000):
         data.at[1,f'Rank of {item[1]}']=i
         i+=1
     data.at[1,'Rank1 Octant ID']=list_of_octant_counts[0][1]
+    data.at[1,'Rank 1 Octant Name']=octant_name_id_mapping[f"{list_of_octant_counts[0][1]}"]
     row=2
+    Rank1_mod_values_count=[]
     while row-1<iter:
         list_of_octant_counts.clear()
         for octant in octants:
@@ -167,9 +170,20 @@ def octant_range_names(mod=5000):
             data.at[row,f'Rank of {item[1]}']=i
             i+=1
         data.at[row,'Rank1 Octant ID']=list_of_octant_counts[0][1]
+        data.at[row,'Rank 1 Octant Name']=octant_name_id_mapping[f"{list_of_octant_counts[0][1]}"]
+        Rank1_mod_values_count.append(list_of_octant_counts[0][1])
+        row+=1
+    print('Finished Calculations')
+    row=13
+    data.iloc[12,12]='Octant ID'
+    data.iloc[12,13]='Octant Name'
+    data.iloc[12,14]='Count of Rank 1 MOD Values'
+    for octant in octants:
+        data.at[row,'1']=octant
+        data.at[row,'-1']=octant_name_id_mapping[f"{octant}"]
+        data.at[row,'2']=Rank1_mod_values_count.count(octant)
         row+=1
     data.to_excel('output.xlsx',index=False)
-    octant_name_id_mapping = {"1":"Internal outward interaction", "-1":"External outward interaction", "2":"External Ejection", "-2":"Internal Ejection", "3":"External inward interaction", "-3":"Internal inward interaction", "4":"Internal sweep", "-4":"External sweep"}
 
 ###Code
 
