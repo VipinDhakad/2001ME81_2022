@@ -31,7 +31,8 @@ for i in range (1, mr + 1):
 		out.cell(row = i, column = j).value = data.value
 
 output.save("output.xlsx")
-def write_data():
+ 
+def octant_range_names(mod=5000):
     try:
         data=pd.read_excel('output.xlsx')
     except:
@@ -93,7 +94,6 @@ def write_data():
     data.at[0,'4']=cnt_p4
     data.at[0,'-4']=cnt_n4
 
-    mod=5000
     i=0
     prev=0
     iter=1
@@ -141,8 +141,34 @@ def write_data():
     print("Data writing complete")
     ##saving the output file generated
     data.to_excel('output.xlsx',index=False)
-def octant_range_names(mod=5000):
-    
+    print("Starting rank calculation")
+    data=pd.read_excel('output.xlsx')
+    octants=[1,-1,2,-2,3,-3,4,-4]
+    i=1
+    list_of_octant_counts=[]
+    for octant in octants:
+        data.at[0,f'Rank of {octant}']=f'Rank {i}'
+        i+=1
+        list_of_octant_counts.append((data.at[0,f'{octant}'],octant))
+    list_of_octant_counts.sort(reverse=True)
+    i=1
+    for item in list_of_octant_counts:
+        data.at[1,f'Rank of {item[1]}']=i
+        i+=1
+    data.at[1,'Rank1 Octant ID']=list_of_octant_counts[0][1]
+    row=2
+    while row-1<iter:
+        list_of_octant_counts.clear()
+        for octant in octants:
+            list_of_octant_counts.append((data.at[row,f'{octant}'],octant))
+        list_of_octant_counts.sort(reverse=True)
+        i=1
+        for item in list_of_octant_counts:
+            data.at[row,f'Rank of {item[1]}']=i
+            i+=1
+        data.at[row,'Rank1 Octant ID']=list_of_octant_counts[0][1]
+        row+=1
+    data.to_excel('output.xlsx',index=False)
     octant_name_id_mapping = {"1":"Internal outward interaction", "-1":"External outward interaction", "2":"External Ejection", "-2":"Internal Ejection", "3":"External inward interaction", "-3":"Internal inward interaction", "4":"Internal sweep", "-4":"External sweep"}
 
 ###Code
@@ -157,7 +183,6 @@ else:
 
 
 mod=5000 
-write_data()
 octant_range_names(mod)
 
 
