@@ -78,7 +78,63 @@ def write_data():
     ##saving the output file generated
     data.to_excel('output.xlsx',index=False)
 def octant_range_names(mod=5000):
+    data=pd.read_excel('output.xlsx')
+    data.at[0,'Octant ID']='Overall Count'
+    data.at[0,'1']=cnt_p1
+    data.at[0,'-1']=cnt_n1
+    data.at[0,'2']=cnt_p2
+    data.at[0,'-2']=cnt_n2
+    data.at[0,'3']=cnt_p3
+    data.at[0,'-3']=cnt_n3
+    data.at[0,'4']=cnt_p4
+    data.at[0,'-4']=cnt_n4
 
+    mod=5000
+    i=0
+    prev=0
+    iter=1
+    cnt_p1,cnt_n1,cnt_p2,cnt_n2,cnt_p3,cnt_n3,cnt_p4,cnt_n4=0,0,0,0,0,0,0,0
+    data.at[1,'Octant ID']=mod
+    # print(len(data))
+    while i<len(data):
+        flag=False
+        for j in range(prev,mod*iter):
+            if i<len(data):
+                if data.at[i,'Octant']==1:
+                    cnt_p1=cnt_p1+1
+                if data.at[i,'Octant']==-1:
+                    cnt_n1=cnt_n1+1
+                if data.at[i,'Octant']==2:
+                    cnt_p2=cnt_p2+1
+                if data.at[i,'Octant']==-2:
+                    cnt_n2=cnt_n2+1
+                if data.at[i,'Octant']==3:
+                    cnt_p3=cnt_p3+1
+                if data.at[i,'Octant']==-3:
+                    cnt_n3=cnt_n3+1
+                if data.at[i,'Octant']==4:
+                    cnt_p4=cnt_p4+1
+                if data.at[i,'Octant']==-4:
+                    cnt_n4=cnt_n4+1
+                i=i+1
+            else:
+                flag=True
+        data.at[iter+1,'Octant ID']=str(prev)+"-"+str(mod*iter-1)
+        if flag:
+            data.at[iter+1,'Octant ID']=str(prev)+"-"+str(len(data))
+        data.at[iter+1,'1']=cnt_p1
+        data.at[iter+1,'-1']=cnt_n1
+        data.at[iter+1,'2']=cnt_p2
+        data.at[iter+1,'-2']=cnt_n2
+        data.at[iter+1,'3']=cnt_p3
+        data.at[iter+1,'-3']=cnt_n3
+        data.at[iter+1,'4']=cnt_p4
+        data.at[iter+1,'-4']=cnt_n4
+        cnt_p1,cnt_n1,cnt_p2,cnt_n2,cnt_p3,cnt_n3,cnt_p4,cnt_n4=0,0,0,0,0,0,0,0
+        prev=mod*iter
+        iter=iter+1
+
+        data.to_excel('octant_output.csv',index=False)
     
     octant_name_id_mapping = {"1":"Internal outward interaction", "-1":"External outward interaction", "2":"External Ejection", "-2":"Internal Ejection", "3":"External inward interaction", "-3":"Internal inward interaction", "4":"Internal sweep", "-4":"External sweep"}
 
@@ -94,6 +150,7 @@ else:
 
 
 mod=5000 
+write_data()
 octant_range_names(mod)
 
 
