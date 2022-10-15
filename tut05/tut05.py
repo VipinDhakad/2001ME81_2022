@@ -4,6 +4,79 @@ from datetime import datetime
 start_time = datetime.now()
 
 #Help https://youtu.be/N6PBd4XdnEw
+import pandas as pd
+import openpyxl
+from datetime import datetime
+start_time=datetime.now()
+try:
+    inp = openpyxl.load_workbook('octant_input.xlsx')
+except:
+    print("File not found!")
+sheet_input = inp.active
+##opening a new workbook to save as a output
+output = openpyxl.Workbook()
+out = output.active
+
+##getting the size of the dataframe in terms of max rows and max columns
+mr = sheet_input.max_row
+mc = sheet_input.max_column
+
+##copying the data of the input file into the newly created empty output file
+for i in range (1, mr + 1):
+	for j in range (1, mc + 1):
+		# reading cell value from source input file
+		data = sheet_input.cell(row = i, column = j)
+
+		# writing the read value to destination output file
+		out.cell(row = i, column = j).value = data.value
+
+output.save("output.xlsx")
+def write_data():
+    try:
+        data=pd.read_excel('output.xlsx')
+    except:
+        print("File not found!")
+    ##finding the mean of the column "U", "V", and "W" with the help of mean functions
+    u_avg=data['U'].mean()
+    v_avg=data['V'].mean()
+    w_avg=data['W'].mean()
+    ##writing the data to the first cells in the output file
+    data.at[0,'U_avg']=u_avg
+    data.at[0,'V_avg']=v_avg
+    data.at[0,'W_avg']=w_avg
+    i=0
+    ##calculating the values of deviation from the mean of every column
+    for ele in data['U']:
+        x=data.at[i,"U'=U-Uavg"]=data.at[i,'U']-u_avg
+        y=data.at[i,"V'=V-Vavg"]=data.at[i,'V']-v_avg
+        z=data.at[i,"W'=W-Wavg"]=data.at[i,'W']-w_avg
+        ##tagging the octant begins here
+        if x>0:
+            if y>0:
+                if z>0:
+                    data.at[i,'Octant']=1
+                else:
+                    data.at[i,'Octant']=-1
+            else:
+                if z>0:
+                    data.at[i,'Octant']=4
+                else:
+                    data.at[i,'Octant']=-4
+        else:
+            if y>0:
+                if z>0:
+                    data.at[i,'Octant']=2
+                else:
+                    data.at[i,'Octant']=-2
+            else:
+                if z>0:
+                    data.at[i,'Octant']=3
+                else:
+                    data.at[i,'Octant']=-3
+        i=i+1
+    print("Data writing complete")
+    ##saving the output file generated
+    data.to_excel('output.xlsx',index=False)
 def octant_range_names(mod=5000):
 
     
