@@ -45,6 +45,7 @@ def write_data():
     data.at[0,'V_avg']=v_avg
     data.at[0,'W_avg']=w_avg
     i=0
+    cnt_p1,cnt_n1,cnt_p2,cnt_n2,cnt_p3,cnt_n3,cnt_p4,cnt_n4=0,0,0,0,0,0,0,0
     ##calculating the values of deviation from the mean of every column
     for ele in data['U']:
         x=data.at[i,"U'=U-Uavg"]=data.at[i,'U']-u_avg
@@ -55,30 +56,33 @@ def write_data():
             if y>0:
                 if z>0:
                     data.at[i,'Octant']=1
+                    cnt_p1=cnt_p1+1
                 else:
                     data.at[i,'Octant']=-1
+                    cnt_n1=cnt_n1+1
             else:
                 if z>0:
                     data.at[i,'Octant']=4
+                    cnt_p4=cnt_p4+1
                 else:
                     data.at[i,'Octant']=-4
+                    cnt_n4=cnt_n4+1
         else:
             if y>0:
                 if z>0:
                     data.at[i,'Octant']=2
+                    cnt_p2=cnt_p2+1
                 else:
                     data.at[i,'Octant']=-2
+                    cnt_n2=cnt_n2+1
             else:
                 if z>0:
                     data.at[i,'Octant']=3
+                    cnt_p3=cnt_p3+1
                 else:
                     data.at[i,'Octant']=-3
+                    cnt_n3=cnt_n3+1
         i=i+1
-    print("Data writing complete")
-    ##saving the output file generated
-    data.to_excel('output.xlsx',index=False)
-def octant_range_names(mod=5000):
-    data=pd.read_excel('output.xlsx')
     data.at[0,'Octant ID']='Overall Count'
     data.at[0,'1']=cnt_p1
     data.at[0,'-1']=cnt_n1
@@ -134,7 +138,10 @@ def octant_range_names(mod=5000):
         prev=mod*iter
         iter=iter+1
 
-        data.to_excel('octant_output.csv',index=False)
+    print("Data writing complete")
+    ##saving the output file generated
+    data.to_excel('output.xlsx',index=False)
+def octant_range_names(mod=5000):
     
     octant_name_id_mapping = {"1":"Internal outward interaction", "-1":"External outward interaction", "2":"External Ejection", "-2":"Internal Ejection", "3":"External inward interaction", "-3":"Internal inward interaction", "4":"Internal sweep", "-4":"External sweep"}
 
