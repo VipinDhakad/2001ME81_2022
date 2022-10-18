@@ -172,13 +172,13 @@ def octant_range_names(mod=5000):
         row+=1
     print('Finished Calculations')
     row=13                          #generating the summary of rank1 values
-    data.iloc[12,12]='Octant ID'
-    data.iloc[12,13]='Octant Name'
-    data.iloc[12,14]='Count of Rank 1 MOD Values'
+    data.iloc[12+iter,12]='Octant ID'
+    data.iloc[12+iter,13]='Octant Name'
+    data.iloc[12+iter,14]='Count of Rank 1 MOD Values'
     for octant in octants:
-        data.at[row,'1']=octant
-        data.at[row,'-1']=octant_name_id_mapping[f"{octant}"]
-        data.at[row,'2']=Rank1_mod_values_count.count(octant)
+        data.at[row+iter,'1']=octant
+        data.at[row+iter,'-1']=octant_name_id_mapping[f"{octant}"]
+        data.at[row+iter,'2']=Rank1_mod_values_count.count(octant)
         row+=1
     data.to_excel('octant_output_ranking_excel.xlsx',index=False)        #saving the output
 
@@ -192,7 +192,7 @@ else:
     print("Please install 3.8.10. Instruction are present in the GitHub Repo/Webmail. Url: https://pastebin.com/nvibxmjw")
 
 
-mod=5000 
+mod=3000
 octant_range_names(mod)
 
 
