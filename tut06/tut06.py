@@ -6,7 +6,7 @@ start_time = datetime.now()
 def attendance_report():
     try:
         inp_file = pd.read_csv('input_attendance.csv')
-        inp = inp_file.fillna("20010000 Random")
+        inp = inp_file.fillna("2001CCXX Random")
     except:
         print("File not found")
     
@@ -41,6 +41,7 @@ def attendance_report():
     attend_duplicate=pd.read_csv(fileName_duplicate)
     duplicate_index=0
     for i in range(0,mc-1):
+        duplicated_attendance=0
         rollno=rollno_inp.at[i,'Roll No']
         t_lec,t_lec_act,t_lec_fake,t_lec_abs,percent=len(total_dates),0,0,0,0
         for j in range(0,mc_consolidated-1):
@@ -61,10 +62,11 @@ def attendance_report():
                             attend_duplicate.at[duplicate_index,'Timestamp']=inp.at[j,'Timestamp']
                             attend_duplicate.at[duplicate_index,'Roll']=rollno
                             attend_duplicate.at[duplicate_index,'Name']=rollno_inp.at[i,'Name']
-                            attend_duplicate.at[duplicate_index,'Total count of attendance on that day']=
+                            duplicated_attendance+=1
                     else:
                         t_lec_fake+=1
                 else: t_lec_fake+=1
+        attend_duplicate.at[duplicate_index,'Total count of attendance on that day']=duplicated_attendance
         fileName=".\myoutput\\"+rollno+'.csv'
         with open(fileName,'w',newline='') as output_file:
             writer=csv.writer(output_file)
@@ -90,6 +92,7 @@ def attendance_report():
         attend_consolidated.at[i,'Percentage']=round((t_lec_act/t_lec)*100,2)
         out.to_csv(fileName,index=False)
     attend_consolidated.to_csv(fileName_consolidated,index=False)
+    attend_duplicate.to_csv(fileName_duplicate,index=False)
     # print(max_roll,max_att)
 # ,,,,,, (attendance_count_actual/total_lecture_taken) 2 digit decimal 
 
