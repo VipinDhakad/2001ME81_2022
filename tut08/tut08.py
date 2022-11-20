@@ -9,7 +9,7 @@ from datetime import datetime
  
 start_time = datetime.now() 
 
-india_innings = open("india_inns2.txt", "r+") 
+india_innings = open("india_inns2.txt", "r+")  #opening input files
 pakistan_innings = open("pak_inns1.txt", "r+") 
 teams = open("teams.txt", "r+") 
 
@@ -25,7 +25,7 @@ line_india = india_innings.readlines()
 
  
 for l_index in line_india: 
-    if l_index == '\n': 
+    if l_index == '\n':       #reading lines by lines in input files
         line_india.remove(l_index) 
 
 line_pakistan = pakistan_innings.readlines()
@@ -55,10 +55,10 @@ for l_index in line_pakistan:
     if f"{bowler[0].strip()}" not in iB.keys(): 
         iB[f"{bowler[0].strip()}"] = [1, 0, 0, 0, 0, 0, 0] 
 
-    elif "wide" in var[1]: 
+    elif "wide" in var[1]: #checking for wide balls
         pass 
 
-    elif "bye" in var[1]: 
+    elif "bye" in var[1]:   #checking for bowler
         if "FOUR" in var[2]: 
             Pakistan_b += 4 
         elif "1" in var[2]: 
@@ -84,7 +84,7 @@ for l_index in line_pakistan:
     else: 
         bat_pak[f"{bowler[1].strip()}"][1] += 1 
 
-    if "out" in var[1]: 
+    if "out" in var[1]:   #checking for out
         iB[f"{bowler[0].strip()}"][3] += 1 
         if "Bowled" in var[1].split("!!")[0]: 
             out_Pak[f"{bowler[1].strip()}"] = ("b" + bowler[0]) 
@@ -95,7 +95,7 @@ for l_index in line_pakistan:
         elif "Lbw" in var[1].split("!!")[0]: 
             out_Pak[f"{bowler[1].strip()}"] = ("lbw  b "+bowler[0]) 
 
-    if "no run" in var[1] or "out" in var[1]: 
+    if "no run" in var[1] or "out" in var[1]:  #checking for no runs
         iB[f"{bowler[0].strip()}"][2] += 0 
         bat_pak[f"{bowler[1].strip()}"][0] += 0 
 
@@ -120,7 +120,7 @@ for l_index in line_pakistan:
         bat_pak[f"{bowler[1].strip()}"][0] += 4 
         bat_pak[f"{bowler[1].strip()}"][2] += 1 
 
-    elif "SIX" in var[1]: 
+    elif "SIX" in var[1]:  #checking for sixes
         iB[f"{bowler[0].strip()}"][2] += 6 
         bat_pak[f"{bowler[1].strip()}"][0] += 6 
         bat_pak[f"{bowler[1].strip()}"][3] += 1 
@@ -134,7 +134,7 @@ for l_index in line_pakistan:
             iB[f"{bowler[0].strip()}"][5] += 1
 
  
-for l_index in bat_pak.values(): 
+for l_index in bat_pak.values():  #pak innings
     l_index[-1] = round((l_index[0]/l_index[1])*100, 2) 
 
     
@@ -264,7 +264,7 @@ for name in bat_pak.keys():
     pakBatters.append(name) 
 
 for l_index in range(len(bat_pak)): 
-    sheet.cell(5 + l_index, 1).value = pakBatters[l_index] 
+    sheet.cell(5 + l_index, 1).value = pakBatters[l_index]  #writing data
     sheet.cell(5 + l_index, 5).value = bat_pak[pakBatters[l_index]][0] 
     sheet.cell(5 + l_index, 6).value = bat_pak[pakBatters[l_index]][1] 
     sheet.cell(5 + l_index, 7).value = bat_pak[pakBatters[l_index]][2] 
