@@ -1,8 +1,10 @@
 import socket
 import threading
 import tkinter
-import tkinter.scrolledtext
-from tkinter import simpledialog
+from tkinter import scrolledtext
+from tkinter import simpledialog 
+import time
+from tkinter import *
 
 HOST='127.0.0.1'
 PORT=9090
@@ -17,68 +19,123 @@ class Client:
         msg=tkinter.Tk()
         msg.withdraw()
 
-        self.nickname=simpledialog.askstring("Nickname", "Please choose a nicknake",parent=msg)
+        self.username=simpledialog.askstring("Username", "Please choose a Username",parent=msg)
+        # self.email=simpledialog.askstring("Email", "Enter your email ID here",parent=msg)
+        
 
-        self.gui_done=False
+        self.ui_complete=False
 
         self.running=True
-        gui_thread=threading.Thread(target=self.gui_loop)
-        receive_thread=threading.Thread(target=self.receive)
+        uiThread=threading.Thread(target=self.ui)
+        RecvThread=threading.Thread(target=self.receive)
 
-        gui_thread.start()
-        receive_thread.start()
-    def gui_loop(self):
-        self.win=tkinter.Tk()
+        uiThread.start()
+        RecvThread.start()
+    def ui(self):
+        self.window=tkinter.Tk()
+        self.window.geometry('650x630')
+        self.win=tkinter.PanedWindow(self.window)           #creating two sections in the main window
         self.win.configure(bg="lightgray")
+        self.win.pack(fill=BOTH, expand=1)
 
-        self.chat_label=tkinter.Label(self.win,text="Chat:",bg="lightgray")
-        self.chat_label.config(font=("Arial",12))
-        self.chat_label.pack(padx=20,pady=5)
+        self.connected_users = tkinter.PanedWindow(self.win)   ##connected user left window
+        self.connected_users.pack(padx=5,pady=5)
+        self.win.add(self.connected_users) 
 
-        self.text_area=tkinter.scrolledtext.ScrolledText(self.win)
-        self.text_area.pack(padx=20,pady=5)
-        self.text_area.config(state='disabled')
+        self.connected_users_label=tkinter.Label(self.connected_users,text="Connected Users",bg="lightgray")
+        self.connected_users_label.config(font=("Arial",12))
+        self.connected_users_label.pack(padx=20,pady=5)
 
-        self.msg_label=tkinter.Label(self.win,text="Chat:",bg="lightgray")
-        self.msg_label.config(font=("Arial",12))
-        self.msg_label.pack(padx=20,pady=5)
+        self.users=scrolledtext.ScrolledText(self.connected_users)
+        self.users.pack(padx=0,pady=0)
+        self.users.config(state='disabled',width=20)
+        self.chat_area = tkinter.PanedWindow(self.win)
+        self.win.add(self.chat_area)
 
-        self.input_area=tkinter.Text(self.win,height=3, )
-        self.input_area.pack(padx=20,pady=5)
+        
+        self.chat_area_label=tkinter.Label(self.chat_area,text="Chat:",bg="lightgray")  ##chat area right window pane
+        self.chat_area_label.config(font=("Arial",12))
+        self.chat_area_label.pack(padx=20,pady=5)
 
-        self.send_button=tkinter.Button(self.win,text="Send",command=self.write)
-        self.send_button.config(font=("Arial",12))
-        self.send_button.pack(padx=20,pady=5)
+        self.msgs=scrolledtext.ScrolledText(self.chat_area)
+        self.msgs.pack(padx=20,pady=5)
+        self.msgs.config(state='disabled')
 
-        self.gui_done=True
-        self.win.protocol("WM_DELETE_WINDOW",self.stop)
+        self.msgs_label=tkinter.Label(self.chat_area,text="Message:",bg="lightgray")
+        self.msgs_label.config(font=("Arial",12))     #giving a label to the message box area
+        self.msgs_label.pack(padx=20,pady=5)
+
+        self.msg_input=tkinter.Text(self.chat_area,height=3, )
+        self.msg_input.pack(padx=20,pady=5)
+
+        self.send_btn=tkinter.Button(self.chat_area,text="Send",command=self.write_msg)
+        self.send_btn.config(font=("Arial",12))       ##button to send the message
+        self.send_btn.pack(padx=20,pady=5)
+
+        self.exit_btn=tkinter.Button(self.chat_area,text="EXIT CHAT",command=self.exit)
+        self.exit_btn.config(font=("Arial",12))            ##exit button to leave chat
+        self.exit_btn.pack(padx=20,pady=5)
+
+        self.ui_complete=True
+        self.window.protocol("WM_DELETE_WINDOW",self.exit)
         self.win.mainloop()
 
-    def write(self):
-        message=f"{self.nickname}: {self.input_area.get('1.0','end')}"
+    def write_msg(self):                      ##sends the message to server and server sends it to all clients
+        message=f"{self.username}: {self.msg_input.get('1.0','end')}"
         self.sock.send(message.encode('utf-8'))
-        self.input_area.delete('1.0','end')
-    def stop(self):
+        self.msg_input.delete('1.0','end')
+    def exit(self):                                             #exit method; executed when either exit button
+        # self.sock.send("exit")                      #    is pressed or 'X' is pressed
+        # self.sock.send(f'{self.username}')
         self.running=False
-        self.win.destroy()
+        self.window.destroy()
         self.sock.close()
         exit(0)
     def receive(self):
         while self.running:
             try:
-                message=self.sock.recv(1024).decode('utf-8')
-                if message=='NICK':
-                    self.sock.send(self.nickname.encode('utf-8'))
+                msg_b=self.sock.recv(1024)
+                msg=str(msg_b,encoding='utf-8')
+                if msg=='USERNAME':                         #sends the username of the client
+                    self.sock.send(self.username.encode('utf-8'))
+                    msg=""
                 else:
-                    if self.gui_done:
-                        self.text_area.config(state='normal')
-                        self.text_area.insert('end', message)
-                        self.text_area.yview('end')
-                        self.text_area.config(state='disabled')
+                    if msg=="c":
+                        toInterpret='1'
+                        msg=""
+                    if msg=="m":
+                        toInterpret='2'
+                        msg=""
+                    if toInterpret=='2':
+                        if self.ui_complete:                    ##if the ui is complete then it renders the msg
+                            self.msgs.config(state='normal')
+                            self.msgs.insert('end', msg)
+                            self.msgs.yview('end')
+                            self.msgs.config(state='disabled')
+                        else:                                   ##if ui is incomplete then it waits for 0.5s and 
+                            time.sleep(0.5)                     #renders the msg assuming ui rendering is complete
+                            self.msgs.config(state='normal')
+                            self.msgs.insert('end', msg)
+                            self.msgs.yview('end')
+                            self.msgs.config(state='disabled')
+                    if toInterpret=='1':
+                        if self.ui_complete:                    ##if the ui is complete then it renders the msg
+                            self.users.config(state='normal')
+                            self.users.replace('1.0','end',msg)
+                            self.users.yview('end')
+                            self.users.config(state='disabled')
+                        else:                                   ##if ui is incomplete then it waits for 0.5s and 
+                            time.sleep(0.5)                     #renders the msg assuming ui rendering is complete
+                            self.users.config(state='normal')
+                            self.users.replace('1.0','end',msg)
+                            self.users.yview('end')
+                            self.users.config(state='disabled')    
             except ConnectionAbortedError:
                 break
             except:
-                print("Error")
+                print("Unknown Error!!!")
                 self.sock.close()
                 break
+
+
 client=Client(HOST, PORT)

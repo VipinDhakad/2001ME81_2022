@@ -1,5 +1,6 @@
 import socket
 import threading
+import time
 
 HOST='127.0.0.1'
 PORT=9090
@@ -12,8 +13,8 @@ server.listen()
 clients=[]
 nicknames=[]
 
-#broadcast
-def broadcast(message):
+
+def broadcast(message):          #sending the content of message to all the connected clients
     for client in clients:
         client.send(message)
 
@@ -21,7 +22,7 @@ def handle(client):
     while True:
         try:
             message=client.recv(1024)
-            print(f"{nicknames[clients.index(client)]}")
+            broadcast("m".encode('utf-8'))
             broadcast(message)
         except:
             index=clients.index(client)
@@ -30,23 +31,25 @@ def handle(client):
             nickname=nicknames[index]
             nicknames.remove(nickname)
             break
-#receive
+
 def receive():
     while True:
         client,address=server.accept()
-        print(f'Connected with {str(address)}')
         
-        client.send("NICK".encode('utf-8'))
-        nickname=client.recv(1024)
+        client.send("USERNAME".encode('utf-8'))
+        nickname=client.recv(1024).decode('utf-8')
 
         nicknames.append(nickname)
+        names = '\n'.join([str(elem) for i,elem in enumerate(nicknames)])
         clients.append(client)
-        print(f"Nickname of the client is {nickname}")
-        broadcast(f"{nickname} connected to the server\n".encode('utf-8'))
-        client.send("Connected to the server\n".encode('utf-8'))
-
+        broadcast("c".encode('utf-8'))
+        time.sleep(0.1)
+        broadcast(f'{names}\n'.encode('utf-8'))
         thread=threading.Thread(target=handle,args=(client,))
         thread.start()
-#handle
-print("Server Running-----")
+        # broadcast("m".encode('utf-8'))
+        # time.sleep(0.01)
+        # broadcast(f"{nickname} Connected\n".encode('utf-8'))
+
+print("**********Server Started**********")
 receive()
